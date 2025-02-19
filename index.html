@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カウントダウンタイマー</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .inline {
+            display: flex;
+            gap: 10px; /* 要素間のスペースを調整 */
+            width: 100%; /* 親要素の幅を100%に設定 */
+            max-width: 480px; /* 親要素の最大幅を480pxに設定 */
+            justify-content: center; /* 中央に配置 */
+        }
+        #start_btn {
+            flex-grow: 1; /* ボタンが親要素の幅を埋めるように設定 */
+            height: 60px; /* ボタンの高さを60pxに設定 */
+            font-size: 1.5em; /* フォントサイズを大きく設定 */
+            background-color: yellowgreen; /* 初期色を黄緑に設定 */
+        }
+        #timer {
+            width: 100%; /* 横幅を100%に設定 */
+            max-width: 480px; /* 最大幅を480pxに設定 */
+            font-size: 6em; /* フォントサイズを大きく設定 */
+            text-align: center; /* テキストを中央揃えに設定 */
+        }
+        #set_time {
+            font-size: 4em; /* フォントサイズを4emに設定 */
+        }
+        #set_time select {
+            font-size: 1em; /* select要素のフォントサイズを調整 */
+            height: 1.5em; /* select要素の高さを調整 */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>カウントダウンタイマー</h1>
+    <div class="inline" id="set_time">
+        <select id="hours"></select>
+        <span>:</span>
+        <select id="minutes"></select>
+        <span>:00</span>
+    </div>
+    <div id="timer">00:00:00</div>
+    <div class="inline">
+        <button id="start_btn">スタート</button>
+    </div>
+</body>
+
+<script>
+    const hours = document.getElementById('hours');
+    const minutes = document.getElementById('minutes');
+    const timer = document.getElementById('timer');
+    const startBtn = document.getElementById('start_btn');
+    let isRunning = false;
+    let countdownInterval;
+    let totalSeconds = 0;
+
+    // 00から23までのoptionを追加
+    for (let i = 0; i < 24; i++) {
+        const option = document.createElement('option');
+        option.value = i.toString().padStart(2, '0');
+        option.textContent = i.toString().padStart(2, '0');
+        hours.appendChild(option);
+    }
+
+    // 00から59までのoptionを追加
+    for (let i = 0; i < 60; i++) {
+        const option = document.createElement('option');
+        option.value = i.toString().padStart(2, '0');
+        option.textContent = i.toString().padStart(2, '0');
+        minutes.appendChild(option);
+    }
+
+    // 時間と分の変更で秒数を設定
+    function updateTotalSeconds() {
+        const selectedHours = parseInt(hours.value, 10);
+        const selectedMinutes = parseInt(minutes.value, 10);
+        totalSeconds = selectedHours * 3600 + selectedMinutes * 60;
+        updateTimerDisplay();
+    }
+
+    // タイマー表示を更新
+    function updateTimerDisplay() {
+        const hrs = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const mins = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (totalSeconds % 60).toString().padStart(2, '0');
+        timer.textContent = `${hrs}:${mins}:${secs}`;
+    }
+
+    // カウントダウンを開始
+    function startCountdown() {
+        countdownInterval = setInterval(() => {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(countdownInterval);
+                startBtn.textContent = 'スタート';
+                startBtn.style.backgroundColor = 'yellowgreen';
+                isRunning = false;
+                alert('タイマー満了しました。');
+                startBtn.disabled = false;
+                updateTotalSeconds(); // タイマーの値を再設定
+            }
+        }, 1000);
+    }
+
+    // イベントリスナーを追加
+    hours.addEventListener('change', updateTotalSeconds);
+    minutes.addEventListener('change', updateTotalSeconds);
+
+    startBtn.addEventListener('click', () => {
+        if (!isRunning) { // カウントダウンが動作していない場合のみスタート
+            startCountdown();
+            isRunning = true; // カウントダウン状態を更新
+            startBtn.disabled = true; // スタートボタンを無効にする
+        }
+    });
+
+
+    // 初期表示を設定
+    updateTotalSeconds();
+</script>
+
+</html>
