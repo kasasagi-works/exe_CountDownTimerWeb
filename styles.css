@@ -1,0 +1,39 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.inline {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 480px;
+    justify-content: center;
+}
+
+#start_btn {
+    flex-grow: 1;
+    height: 60px;
+    font-size: 1.5em;
+    background-color: yellowgreen;
+}
+
+#timer {
+    width: 100%;
+    max-width: 480px;
+    font-size: 6em;
+    text-align: center;
+}
+
+#set_time {
+    font-size: 4em;
+}
+
+#set_time select {
+    font-size: 1em;
+    height: 1.5em;
+} 
